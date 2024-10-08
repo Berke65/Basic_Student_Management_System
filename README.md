@@ -20,4 +20,4 @@ This project aims to create a student management system. The system allows admin
 
   ## Status
 
-  -in development
+- In development
