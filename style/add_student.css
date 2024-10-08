@@ -1,0 +1,133 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.admin-panel {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    padding-left: 30px; /* Daha fazla boşluk bırakmak için padding artırıldı */
+}
+
+.sidebar .header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.sidebar h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.sidebar h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 10px;
+    background-color: #34495e;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #1abc9c;
+}
+
+.sidebar .logout-btn {
+    background-color: #e74c3c;
+    border: none;
+    padding: 10px 15px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.sidebar .logout-btn:hover {
+    background-color: #c0392b;
+}
+
+.content {
+    margin-left: 280px; /* Sidebar genişliği + biraz boşluk */
+    padding: 40px;
+    background-color: white;
+    width: calc(100% - 280px); /* İçerik genişliği ayarlandı */
+    min-height: 100vh;
+}
+
+.content h2 {
+    font-size: 28px; /* Başlık boyutu */
+    color: #34495e; /* Başlık rengi */
+    margin-bottom: 20px; /* Başlık altına boşluk */
+}
+
+form {
+    padding: 20px; /* Form iç boşluğu */
+    border-radius: 5px; /* Kenar yuvarlama */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Gölge efekti */
+}
+
+form input, form select {
+    width: 100%; /* Tam genişlik */
+    padding: 10px; /* İç boşluk */
+    margin-bottom: 15px; /* Aşağı boşluk */
+    border: 1px solid #ddd; /* Kenar rengi */
+    border-radius: 5px; /* Kenar yuvarlama */
+}
+
+form button {
+    background-color: #3498db; /* Buton arka plan rengi */
+    color: white; /* Buton metin rengi */
+    border: none; /* Kenar yok */
+    padding: 10px; /* İç boşluk */
+    border-radius: 5px; /* Kenar yuvarlama */
+    cursor: pointer; /* İmleç değişimi */
+    transition: background-color 0.3s; /* Hover geçiş efekti */
+}
+
+form button:hover {
+    background-color: #2980b9; /* Hover rengi */
+}
+
+.error, .success {
+    margin-bottom: 20px; /* Mesaj altına boşluk */
+    padding: 10px; /* İç boşluk */
+    border-radius: 5px; /* Kenar yuvarlama */
+}
+
+.error {
+    background-color: #e74c3c; /* Hata mesajı rengi */
+    color: white; /* Hata mesajı metin rengi */
+}
+
+.success {
+    background-color: #2ecc71; /* Başarı mesajı rengi */
+    color: white; /* Başarı mesajı metin rengi */
+}

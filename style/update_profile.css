@@ -1,0 +1,138 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.admin-panel {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    /* Daha fazla boşluk bırakmak için padding artırıldı */
+    padding-left: 30px;
+}
+
+.sidebar .header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.sidebar h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.sidebar h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 10px;
+    background-color: #34495e;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #1abc9c;
+}
+
+.sidebar .logout-btn {
+    background-color: #e74c3c;
+    border: none;
+    padding: 10px 15px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.sidebar .logout-btn:hover {
+    background-color: #c0392b;
+}
+
+.content {
+    margin-left: 280px; /* Sidebar genişliği + biraz boşluk */
+    padding: 40px;
+    background-color: white;
+    width: calc(100% - 280px); /* İçerik genişliği ayarlandı */
+    min-height: 100vh;
+}
+
+h2 {
+    font-size: 28px;
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.update-btn {
+    background-color: #3498db; /* Mavi güncelleme butonu */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.update-btn:hover {
+    background-color: #2980b9; /* Koyu mavi hover rengi */
+}
+
+.success-message {
+    background-color: #2ecc71; /* Başarılı güncelleme mesajı için yeşil arka plan */
+    color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Genel stil ve boşluk düzenlemesi */
+* {
+    box-sizing: border-box;
+}
