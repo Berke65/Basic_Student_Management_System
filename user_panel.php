@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'connection.php'; // Veritabanı bağlantısı
 
 // Giriş kontrolü
 if (!isset($_SESSION['username']) || $_SESSION['rol'] !== 'user') {
@@ -14,12 +15,22 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
-// Örnek veri (Gerçek veriler veritabanından çekilecektir)
-$grades = [
-    ['subject' => 'Matematik', 'grade' => 85, 'status' => 'Geçti'],
-    ['subject' => 'Fizik', 'grade' => 70, 'status' => 'Geçti'],
-    ['subject' => 'Kimya', 'grade' => 40, 'status' => 'Kaldı'],
-];
+// Kullanıcının notlarını veritabanından çek
+$ogr_ad = $_SESSION['username'];
+$query = "SELECT lesson_name, lesson_note, lesson_status FROM notes WHERE ogr_ad = ?";
+$grades = [];
+
+if ($stmt = $conn->prepare($query)) {
+    $stmt->bind_param('s', $ogr_ad); // Kullanıcı adını parametre olarak kullan
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    while ($row = $result->fetch_assoc()) {
+        $grades[] = $row; // Notları diziye ekle
+    }
+    $stmt->close();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +47,7 @@ $grades = [
     <div class="admin-panel">
         <div class="sidebar">
             <div class="header">
+                <br><br>
                 <h1>Kullanıcı Paneli</h1>
                 <br>
                 <form action="" method="get">
@@ -64,13 +76,19 @@ $grades = [
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($grades as $grade): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($grade['subject']); ?></td>
-                        <td><?php echo htmlspecialchars($grade['grade']); ?></td>
-                        <td><?php echo htmlspecialchars($grade['status']); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
+                    <?php if (empty($grades)): ?>
+                        <tr>
+                            <td colspan="3">Henüz not girilmedi.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($grades as $grade): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($grade['lesson_name']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['lesson_note']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['lesson_status']); ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

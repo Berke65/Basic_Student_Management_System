@@ -29,6 +29,7 @@ if (isset($_GET['logout'])) {
     <div class="admin-panel">
         <div class="sidebar">
             <div class="header">
+                <br><br>
                 <h1>Admin Paneli</h1>
                 <br>
                 <form action="" method="get">

@@ -7,6 +7,13 @@ if (!isset($_SESSION['username']) || $_SESSION['rol'] !== 'user') {
     exit();
 }
 
+// Çıkış işlemi
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: ../login.php");
+    exit();
+}
+
 // Veritabanı bağlantısı
 include('../connection.php');
 

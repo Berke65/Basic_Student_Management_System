@@ -18,16 +18,28 @@ if (isset($_GET['logout'])) {
 $error = '';
 $success = '';
 
+// Kullanıcı listesini çekme
+$users = [];
+$query = "SELECT username FROM users WHERE rol = 'user'";
+$result = $conn->query($query);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row['username'];
+    }
+}
+
+// Form gönderildiğinde not ekleme işlemi
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Formdan gelen verileri al
+    $ogr_ad = $_POST['ogr_ad']; // Seçilen öğrenci adı
     $lesson_name = $_POST['lesson_name'];
     $lesson_note = $_POST['lesson_note'];
     $lesson_status = $_POST['lesson_status'];
 
     // Veritabanına ekleme sorgusu
-    $query = "INSERT INTO notes (lesson_name, lesson_note, lesson_status) VALUES (?, ?, ?)";
+    $query = "INSERT INTO notes (ogr_ad, lesson_name, lesson_note, lesson_status) VALUES (?, ?, ?, ?)";
     if ($stmt = $conn->prepare($query)) {
-        $stmt->bind_param('sss', $lesson_name, $lesson_note, $lesson_status); // 'sss' string türünde 3 parametre
+        $stmt->bind_param('ssss', $ogr_ad, $lesson_name, $lesson_note, $lesson_status); // 'ssss' string türünde 4 parametre
         if ($stmt->execute()) {
             $success = "Not başarıyla eklendi.";
         } else {
@@ -80,13 +92,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
 
             <form method="POST" action="">
+                <select name="ogr_ad" required>
+                    <option value="" disabled selected>Öğrenci Seçiniz</option>
+                    <?php foreach ($users as $user): ?>
+                        <option value="<?php echo htmlspecialchars($user); ?>"><?php echo htmlspecialchars($user); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                
                 <input type="text" name="lesson_name" placeholder="Ders Adı" required>
                 <input type="text" name="lesson_note" placeholder="Not" required>
+                
                 <select name="lesson_status" required>
                     <option value="" disabled selected>Durum Seçiniz</option>
                     <option value="geçti">Geçti</option>
-                    <option value="kaldı">Kaldı</option> <!-- hesaplamayı vize final mantıgı mı yoksa normal mi bilemediğimden hesaplama kısmını yapmadım gecti kaldıyı da dümenden yaptım yapamazsan bekersoft halleder yaz yeter -->
+                    <option value="kaldı">Kaldı</option>
                 </select>
+                
                 <button type="submit">Notu Ekle</button>
             </form>
         </div>
