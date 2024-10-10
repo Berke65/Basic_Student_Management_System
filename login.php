@@ -6,7 +6,7 @@ $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Rolü ve kullanıcı bilgilerini al
-    $role = $_POST['role'];
+    $role = $_POST['role']; // fresh
     $username = $_POST['username'];
     $password = $_POST['password'];
 
