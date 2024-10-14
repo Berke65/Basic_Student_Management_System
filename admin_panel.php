@@ -42,6 +42,8 @@ if (isset($_GET['logout'])) {
                 <li><a href="admin/add_student.php">Öğrenci / Admin Ekle</a></li>
                 <li><a href="admin/enter_grades.php">Not Gir</a></li>
                 <li><a href="admin/manage_payments.php">Ödeme Bilgileri</a></li>
+                <li><a href="admin/add_lessons.php">Ders Ekle</a></li>
+
                 <!-- Diğer işlemler buraya eklenebilir -->
             </ul>
         </div>

@@ -1,32 +1,29 @@
 <?php
 session_start();
-require 'connection.php'; // Veritabanı bağlantısı
+require 'connection.php'; 
 
-// Giriş kontrolü
 if (!isset($_SESSION['username']) || $_SESSION['rol'] !== 'user') {
     header("Location: login.php");
     exit();
 }
 
-// Çıkış işlemi
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: login.php");
     exit();
 }
 
-// Kullanıcının notlarını veritabanından çek
 $ogr_ad = $_SESSION['username'];
 $query = "SELECT lesson_name, lesson_note, lesson_status FROM notes WHERE ogr_ad = ?";
 $grades = [];
 
 if ($stmt = $conn->prepare($query)) {
-    $stmt->bind_param('s', $ogr_ad); // Kullanıcı adını parametre olarak kullan
+    $stmt->bind_param('s', $ogr_ad); 
     $stmt->execute();
     $result = $stmt->get_result();
     
     while ($row = $result->fetch_assoc()) {
-        $grades[] = $row; // Notları diziye ekle
+        $grades[] = $row; 
     }
     $stmt->close();
 }
@@ -58,7 +55,6 @@ if ($stmt = $conn->prepare($query)) {
             <ul>
                 <li><a href="user_panel.php">Notlarımı Gör</a></li>
                 <li><a href="user/update_profile.php">Profil Bilgilerimi Güncelle</a></li>
-                <!-- Diğer işlemler buraya eklenebilir -->
             </ul>
         </div>
 

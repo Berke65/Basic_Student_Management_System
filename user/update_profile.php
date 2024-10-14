@@ -1,26 +1,21 @@
 <?php
 session_start();
 
-// Giriş kontrolü
 if (!isset($_SESSION['username']) || $_SESSION['rol'] !== 'user') {
     header("Location: login.php");
     exit();
 }
 
-// Çıkış işlemi
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: ../login.php");
     exit();
 }
 
-// Veritabanı bağlantısı
 include('../connection.php');
 
-// Oturumdan kullanıcı adı alınıyor
 $username = $_SESSION['username'];
 
-// Veritabanından kullanıcı bilgilerini çek
 $sql = "SELECT id, username, password, email FROM users WHERE username = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $username);
@@ -28,46 +23,38 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-// Veritabanından gelen kullanıcı bilgileri
 if ($user) {
     $user_id = $user['id'];
     $username = $user['username'];
     $email = $user['email'];
-    $password = $user['password']; // Şifreyi düz metin olarak alıyoruz
+    $password = $user['password']; 
 } else {
-    // Kullanıcı bulunamazsa oturumdan çıkarabilirsiniz
     header("Location: logout.php");
     exit();
 }
 
-// Form gönderildiğinde
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Formdan gelen veriler
+
     $new_username = $_POST['username'];
     $new_email = $_POST['email'];
     $new_password = $_POST['password'];
 
-    // Şifre değişikliği isteğe bağlı; eğer şifre alanı doluysa şifreyi güncelle
     if (!empty($new_password)) {
-        $updated_password = $new_password; // Şifreyi düz metin olarak saklıyoruz
+        $updated_password = $new_password; 
     } else {
-        $updated_password = $password; // Şifreyi değiştirmemişse mevcut şifreyi kullan
+        $updated_password = $password;
     }
 
-    // Veritabanında kullanıcı bilgilerini güncelleme
     $update_sql = "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?";
     $update_stmt = $conn->prepare($update_sql);
     $update_stmt->bind_param("sssi", $new_username, $new_email, $updated_password, $user_id);
     $update_stmt->execute();
 
-    // Güncelleme başarılı olduğunda oturum verilerini güncelle
     $_SESSION['username'] = $new_username;
     $_SESSION['email'] = $new_email;
 
-    // Başarılı mesajı
     $success_message = "Bilgileriniz başarıyla güncellenmiştir.";
 
-    // Güncellenmiş verileri tekrar yükle
     $username = $new_username;
     $email = $new_email;
 }

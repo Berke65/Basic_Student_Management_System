@@ -1,14 +1,12 @@
 <?php
 session_start();
-require '../connection.php'; // Veritabanı bağlantısı
+require '../connection.php';
 
-// Giriş kontrolü
 if (!isset($_SESSION['username']) || $_SESSION['rol'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 
-// Çıkış işlemi
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: ../login.php");
@@ -18,7 +16,6 @@ if (isset($_GET['logout'])) {
 $error = '';
 $success = '';
 
-// Kullanıcı listesini çekme
 $users = [];
 $query = "SELECT username FROM users WHERE rol = 'user'";
 $result = $conn->query($query);
@@ -28,18 +25,59 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Form gönderildiğinde not ekleme işlemi
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Formdan gelen verileri al
-    $ogr_ad = $_POST['ogr_ad']; // Seçilen öğrenci adı
-    $lesson_name = $_POST['lesson_name'];
-    $lesson_note = $_POST['lesson_note'];
-    $lesson_status = $_POST['lesson_status'];
+$lessons = [];
+$query = "SELECT ders_id, ders_ad, ders_gecme_notu FROM dersler";
+$result = $conn->query($query);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $lessons[] = $row;
+    }
+}
 
-    // Veritabanına ekleme sorgusu
-    $query = "INSERT INTO notes (ogr_ad, lesson_name, lesson_note, lesson_status) VALUES (?, ?, ?, ?)";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $ogr_ad = $_POST['ogr_ad'];
+    $ders_id = $_POST['ders_id'];
+    $vize = $_POST['vize'];
+    $final = $_POST['final'];
+    $ara1 = isset($_POST['ara1']) ? $_POST['ara1'] : null;
+    $ara2 = isset($_POST['ara2']) ? $_POST['ara2'] : null;
+    $ara3 = isset($_POST['ara3']) ? $_POST['ara3'] : null;
+
+    $query = "SELECT ders_gecme_notu FROM dersler WHERE ders_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('s', $ders_id);
+    $stmt->execute();
+    $stmt->bind_result($ders_gecme_notu);
+    $stmt->fetch();
+    $stmt->close();
+
+    $ara_toplam = 0;
+    $ara_sayisi = 0;
+
+    if (!empty($ara1)) {
+        $ara_toplam += $ara1 * 0.0333;
+        $ara_sayisi++;
+    }
+    if (!empty($ara2)) {
+        $ara_toplam += $ara2 * 0.0333;
+        $ara_sayisi++;
+    }
+    if (!empty($ara3)) {
+        $ara_toplam += $ara3 * 0.0333;
+        $ara_sayisi++;
+    }
+
+    $ara_ortalama = $ara_sayisi > 0 ? $ara_toplam : 0;
+
+    $vize_ortalama = $vize * 0.4;
+    $final_ortalama = $final * 0.5;
+
+    $genel_ortalama = $ara_ortalama + $vize_ortalama + $final_ortalama;
+    $lesson_status = $genel_ortalama >= $ders_gecme_notu ? 'geçti' : 'kaldı';
+
+    $query = "INSERT INTO notes (ders_id, ogr_ad, vize, final, ara1, ara2, ara3, genel_ortalama, lesson_status, gecme_notu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     if ($stmt = $conn->prepare($query)) {
-        $stmt->bind_param('ssss', $ogr_ad, $lesson_name, $lesson_note, $lesson_status); // 'ssss' string türünde 4 parametre
+        $stmt->bind_param('ssssssssss', $ders_id, $ogr_ad, $vize, $final, $ara1, $ara2, $ara3, $genel_ortalama, $lesson_status, $ders_gecme_notu);
         if ($stmt->execute()) {
             $success = "Not başarıyla eklendi.";
         } else {
@@ -59,10 +97,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Not Ekle</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style/enter_grades.css"> <!-- Admin paneli CSS dosyanıza referans -->
+    <link rel="stylesheet" href="../style/enter_grades.css">
 </head>
 <body>
-
     <div class="admin-panel">
         <div class="sidebar">
             <div class="header">
@@ -74,7 +111,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3>Yönetim Menüsü</h3>
             <ul>
                 <li><a href="../admin_panel.php">Ana Sayfa</a></li>
-                <li><a href="add_student.php">Öğrenci Ekle</a></li>
+                <li><a href="add_student.php">Öğrenci / Admin Ekle</a></li>
+                <li><a href="add_lessons.php">Ders Ekle</a></li>
                 <li><a href="enter_grades.php">Not Gir</a></li>
                 <li><a href="manage_payments.php">Ödeme Bilgileri</a></li>
             </ul>
@@ -99,19 +137,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endforeach; ?>
                 </select>
                 
-                <input type="text" name="lesson_name" placeholder="Ders Adı" required>
-                <input type="text" name="lesson_note" placeholder="Not" required>
-                
-                <select name="lesson_status" required>
-                    <option value="" disabled selected>Durum Seçiniz</option>
-                    <option value="geçti">Geçti</option>
-                    <option value="kaldı">Kaldı</option>
+                <select name="ders_id" required>
+                    <option value="" disabled selected>Ders Seçiniz</option>
+                    <?php foreach ($lessons as $lesson): ?>
+                        <option value="<?php echo htmlspecialchars($lesson['ders_id']); ?>">
+                            <?php echo htmlspecialchars($lesson['ders_ad']); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
+                
+                <input type="number" name="ara1" placeholder="1. Ara Sınav Notu (Opsiyonel)">
+                <input type="number" name="ara2" placeholder="2. Ara Sınav Notu (Opsiyonel)">
+                <input type="number" name="ara3" placeholder="3. Ara Sınav Notu (Opsiyonel)">
+                <input type="number" name="vize" placeholder="Vize Notu" required>
+                <input type="number" name="final" placeholder="Final Notu" required>
                 
                 <button type="submit">Notu Ekle</button>
             </form>
         </div>
     </div>
-
 </body>
 </html>

@@ -5,12 +5,11 @@ require 'connection.php';
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Rolü ve kullanıcı bilgilerini al
-    $role = $_POST['role']; // fresh
+
+    $role = $_POST['role']; 
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Kullanıcının seçtiği role göre sorgu oluştur
     $query = "SELECT * FROM users WHERE username = ? AND rol = ?";
     if ($stmt = $conn->prepare($query)) {
         $stmt->bind_param('ss', $username, $role);  
@@ -20,17 +19,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             
-            // Şifre kontrolü
             if ($password === $row['password']) {
-                // Kullanıcı bilgilerini oturuma kaydet
+
                 $_SESSION['username'] = $row['username'];
-                $_SESSION['rol'] = $row['rol']; // 'role' yerine 'rol' kullanmalıyız
+                $_SESSION['rol'] = $row['rol']; 
                 
-                // Rol kontrolü ve yönlendirme
                 if ($row['rol'] === 'admin') {
-                    header(header: "Location: admin_panel.php"); // Admin paneline yönlendir
+                    header(header: "Location: admin_panel.php");
                 } else {
-                    header(header: "Location: user_panel.php"); // Kullanıcı paneline yönlendir
+                    header(header: "Location: user_panel.php"); 
                 }
                 exit();
             } else {
@@ -46,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Eğer kullanıcı giriş yapmışsa, paneline yönlendir
 if (isset($_SESSION['username'])) {
     if ($_SESSION['rol'] === 'admin') {
         header("Location: admin_panel.php");
@@ -64,7 +60,8 @@ if (isset($_SESSION['username'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş Yap</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/login.css"> <!-- CSS dosyanız -->
+    <link rel="stylesheet" href="style/login.css"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 </head>
 <body>
 
@@ -86,8 +83,13 @@ if (isset($_SESSION['username'])) {
                 <input type="password" name="password" placeholder="Şifre" required>
                 <button type="submit">Giriş Yap</button>
             </form>
+
+            <a href="forgotPassword.php"><button type="button" class="btn btn-outline-primary">Şifremi unuttum</button>
+            </a>
+
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,20 +1,20 @@
 <?php
 session_start();
-require '../connection.php'; // Veritabanı bağlantısı
+require '../connection.php'; 
 
-// Giriş kontrolü
 if (!isset($_SESSION['username']) || $_SESSION['rol'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 
-// Çıkış işlemi
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: ../login.php");
     exit();
 }
 ?>
+
+<!-- site acılınca aktiflestirilecek-->
 
 <!DOCTYPE html>
 <html lang="tr">
@@ -23,7 +23,7 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Yapım Aşamasında</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style/add_student.css"> <!-- Admin paneli CSS dosyanıza referans -->
+    <link rel="stylesheet" href="../style/add_student.css">
 </head>
 <body>
 
@@ -38,7 +38,8 @@ if (isset($_GET['logout'])) {
             <h3>Yönetim Menüsü</h3>
             <ul>
                 <li><a href="../admin_panel.php">Ana Sayfa</a></li>
-                <li><a href="admin/add_student.php">Öğrenci Ekle</a></li>
+                <li><a href="admin/add_student.php">Öğrenci / Admin Ekle</a></li>
+                <li><a href="add_lessons.php">Ders Ekle</a></li>
                 <li><a href="enter_grades.php">Not Gir</a></li>
                 <li><a href="manage_payments.php">Ödeme Bilgileri</a></li>
             </ul>
