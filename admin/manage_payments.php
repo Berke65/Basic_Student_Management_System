@@ -38,7 +38,7 @@ if (isset($_GET['logout'])) {
             <h3>Yönetim Menüsü</h3>
             <ul>
                 <li><a href="../admin_panel.php">Ana Sayfa</a></li>
-                <li><a href="admin/add_student.php">Öğrenci / Admin Ekle</a></li>
+                <li><a href="add_student.php">Öğrenci / Admin Ekle</a></li>
                 <li><a href="add_lessons.php">Ders Ekle</a></li>
                 <li><a href="enter_grades.php">Not Gir</a></li>
                 <li><a href="manage_payments.php">Ödeme Bilgileri</a></li>

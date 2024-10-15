@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     $query = "SELECT * FROM users WHERE username = ? AND rol = ?";
-    if ($stmt = $conn->prepare($query)) {
+    if ($stmt = $conn->prepare(query: $query)) {
         $stmt->bind_param('ss', $username, $role);  
         $stmt->execute();
         $result = $stmt->get_result();
@@ -70,7 +70,7 @@ if (isset($_SESSION['username'])) {
             <h1>Giriş Yap</h1>
             
             <?php if ($error): ?>
-                <div class="error"><?php echo htmlspecialchars($error); ?></div>
+                <div class="error"><?php echo htmlspecialchars(string: $error); ?></div>
             <?php endif; ?>
 
             <form method="POST" action="">

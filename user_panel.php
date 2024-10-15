@@ -14,7 +14,7 @@ if (isset($_GET['logout'])) {
 }
 
 $ogr_ad = $_SESSION['username'];
-$query = "SELECT lesson_name, lesson_note, lesson_status FROM notes WHERE ogr_ad = ?";
+$query = "SELECT ara1, ara2, ara3 FROM notes WHERE ogr_ad = ?";
 $grades = [];
 
 if ($stmt = $conn->prepare($query)) {
@@ -79,9 +79,9 @@ if ($stmt = $conn->prepare($query)) {
                     <?php else: ?>
                         <?php foreach ($grades as $grade): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($grade['lesson_name']); ?></td>
-                            <td><?php echo htmlspecialchars($grade['lesson_note']); ?></td>
-                            <td><?php echo htmlspecialchars($grade['lesson_status']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['ara1']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['ara2']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['ara3']); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
