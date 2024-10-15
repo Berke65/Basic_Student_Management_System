@@ -2,11 +2,13 @@
 session_start();
 require 'connection.php'; 
 
+// Kullanıcı oturum kontrolü
 if (!isset($_SESSION['username']) || $_SESSION['rol'] !== 'user') {
     header("Location: login.php");
     exit();
 }
 
+// Kullanıcı çıkış işlemi
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: login.php");
@@ -14,7 +16,10 @@ if (isset($_GET['logout'])) {
 }
 
 $ogr_ad = $_SESSION['username'];
-$query = "SELECT ara1, ara2, ara3 FROM notes WHERE ogr_ad = ?";
+$query = "SELECT dersler.ders_ad, notes.ara1, notes.ara2, notes.ara3, notes.vize, notes.final, notes.genel_ortalama, notes.lesson_status 
+          FROM notes 
+          JOIN dersler ON notes.ders_id = dersler.ders_id 
+          WHERE notes.ogr_ad = ?";
 $grades = [];
 
 if ($stmt = $conn->prepare($query)) {
@@ -27,7 +32,6 @@ if ($stmt = $conn->prepare($query)) {
     }
     $stmt->close();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -67,21 +71,31 @@ if ($stmt = $conn->prepare($query)) {
                 <thead>
                     <tr>
                         <th>Ders</th>
-                        <th>Not</th>
+                        <th>Ara 1</th>
+                        <th>Ara 2</th>
+                        <th>Ara 3</th>
+                        <th>Vize</th>
+                        <th>Final</th>
+                        <th>Genel Ortalama</th>
                         <th>Durum</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($grades)): ?>
                         <tr>
-                            <td colspan="3">Henüz not girilmedi.</td>
+                            <td colspan="8">Henüz not girilmedi.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($grades as $grade): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($grade['ara1']); ?></td>
-                            <td><?php echo htmlspecialchars($grade['ara2']); ?></td>
-                            <td><?php echo htmlspecialchars($grade['ara3']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['ders_ad']); ?></td>
+                            <td><?php echo ($grade['ara1'] == 0) ? "Sınav Yapılmadı" : htmlspecialchars($grade['ara1']); ?></td>
+                            <td><?php echo ($grade['ara2'] == 0) ? "Sınav Yapılmadı" : htmlspecialchars($grade['ara2']); ?></td>
+                            <td><?php echo ($grade['ara3'] == 0) ? "Sınav Yapılmadı" : htmlspecialchars($grade['ara3']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['vize']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['final']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['genel_ortalama']); ?></td>
+                            <td><?php echo htmlspecialchars($grade['lesson_status']); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

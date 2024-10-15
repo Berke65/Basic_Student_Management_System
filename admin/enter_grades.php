@@ -35,10 +35,12 @@ if ($result->num_rows > 0) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $ogr_ad = $_POST['ogr_ad'];
     $ders_id = $_POST['ders_id'];
     $vize = $_POST['vize'];
     $final = $_POST['final'];
+    
     $ara1 = isset($_POST['ara1']) ? $_POST['ara1'] : null;
     $ara2 = isset($_POST['ara2']) ? $_POST['ara2'] : null;
     $ara3 = isset($_POST['ara3']) ? $_POST['ara3'] : null;

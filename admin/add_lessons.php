@@ -17,6 +17,7 @@ $error = '';
 $success = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
     $ders_ad = $_POST['ders_ad'];
     $ders_gecme_notu = $_POST['ders_gecme_notu'];
 
